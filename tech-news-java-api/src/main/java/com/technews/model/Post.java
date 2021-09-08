@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties
 @Table(name = "post")
-
 
 public class Post {
     @Id
@@ -22,7 +23,6 @@ public class Post {
     private String userName;
     @Transient
     private int voteCount;
-
     private Integer userId;
 
     @NotNull
@@ -32,8 +32,9 @@ public class Post {
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @Column(name = "updated_at")
-    private Date updatedAt = new Date();
+    public Date updatedAt = new Date();
+
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     public Post(Integer id, String title, String postUrl, int voteCount, Integer userId) {
