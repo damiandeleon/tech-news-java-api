@@ -45,6 +45,10 @@ public class Post {
         this.userId = userId;
     }
 
+    public Post() {
+
+    }
+
     public Integer getId() {
         return id;
     }
