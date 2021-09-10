@@ -4,21 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@JsonIgnoreProperties
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "post")
+public class Post implements Serializable {
 
-public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String title;
     private String postUrl;
-
     @Transient
     private String userName;
     @Transient
@@ -32,10 +32,16 @@ public class Post {
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    public Date updatedAt = new Date();
+    @Column(name = "updated_at")
+    private Date updatedAt = new Date();
 
+    // Need to use FetchType.LAZY to resolve multiple bags exception
     @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+
+    public Post() {
+    }
 
     public Post(Integer id, String title, String postUrl, int voteCount, Integer userId) {
         this.id = id;
@@ -43,10 +49,6 @@ public class Post {
         this.postUrl = postUrl;
         this.voteCount = voteCount;
         this.userId = userId;
-    }
-
-    public Post() {
-
     }
 
     public Integer getId() {
@@ -126,7 +128,15 @@ public class Post {
         if (this == o) return true;
         if (!(o instanceof Post)) return false;
         Post post = (Post) o;
-        return getVoteCount() == post.getVoteCount() && Objects.equals(getId(), post.getId()) && Objects.equals(getTitle(), post.getTitle()) && Objects.equals(getPostUrl(), post.getPostUrl()) && Objects.equals(getUserName(), post.getUserName()) && Objects.equals(getUserId(), post.getUserId()) && Objects.equals(getPostedAt(), post.getPostedAt()) && Objects.equals(getUpdatedAt(), post.getUpdatedAt()) && Objects.equals(getComments(), post.getComments());
+        return getVoteCount() == post.getVoteCount() &&
+                Objects.equals(getId(), post.getId()) &&
+                Objects.equals(getTitle(), post.getTitle()) &&
+                Objects.equals(getPostUrl(), post.getPostUrl()) &&
+                Objects.equals(getUserName(), post.getUserName()) &&
+                Objects.equals(getUserId(), post.getUserId()) &&
+                Objects.equals(getPostedAt(), post.getPostedAt()) &&
+                Objects.equals(getUpdatedAt(), post.getUpdatedAt()) &&
+                Objects.equals(getComments(), post.getComments());
     }
 
     @Override

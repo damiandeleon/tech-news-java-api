@@ -30,6 +30,8 @@ public class HomePageController {
     @Autowired
     CommentRepository commentRepository;
 
+//    login and logout endpoints
+
     @GetMapping("/login")
     public String login(Model model, HttpServletRequest request) {
 
@@ -48,6 +50,9 @@ public class HomePageController {
         }
         return "redirect:/login";
     }
+
+
+//    Create the Homepage Endpoint
 
     @GetMapping("/")
     public String homepageSetup(Model model, HttpServletRequest request) {
@@ -76,17 +81,18 @@ public class HomePageController {
         return "homepage";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboardPageSetup(Model model, HttpServletRequest request) throws Exception {
+//    Create the Dashboard Endpoint
+@GetMapping("/dashboard")
+public String dashboardPageSetup(Model model, HttpServletRequest request) throws Exception {
 
-        if (request.getSession(false) != null) {
-            setupDashboardPage(model, request);
-            return "dashboard";
-        } else {
-            model.addAttribute("user", new User());
-            return "login";
-        }
+    if (request.getSession(false) != null) {
+        setupDashboardPage(model, request);
+        return "dashboard";
+    } else {
+        model.addAttribute("user", new User());
+        return "login";
     }
+}
 
     @GetMapping("/dashboardEmptyTitleAndLink")
     public String dashboardEmptyTitleAndLinkHandler(Model model, HttpServletRequest request) throws Exception {
@@ -201,6 +207,4 @@ public class HomePageController {
 
         return model;
     }
-
-
 }
